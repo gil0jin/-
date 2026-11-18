@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>산업안전관리자 1년 업무 캘린더</title>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--ink:#1d2733;--sub:#617083;--line:#dde2e8;--brand:#c2410c;--brand-d:#9a3412;--soft:#fff3ea;--ok:#15803d;--okbg:#e7f6ec;--late:#b91c1c;--latebg:#fdeaea}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px 48px}
+.top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;padding:28px 0 16px}
+.eyebrow{color:var(--brand);font-weight:700;font-size:13px;letter-spacing:.02em}
+h1{margin:2px 0 4px;font-size:26px;line-height:1.25}
+.top p{margin:0;color:var(--sub);font-size:14px}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.meta label{display:flex;flex-direction:column;font-size:12px;color:var(--sub);gap:2px}
+.meta input{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font:inherit;font-size:14px;min-width:160px;background:#fff}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;position:sticky;top:0;z-index:5}
+.yearnav{display:flex;align-items:center;gap:6px;font-weight:700}
+.yearnav button{width:32px;height:32px;border:1px solid var(--line);background:#fff;border-radius:8px;font-size:18px;cursor:pointer}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tabs button{border:0;background:transparent;padding:8px 14px;border-radius:8px;font:inherit;font-weight:600;color:var(--sub);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--soft);color:var(--brand-d)}
+.tools{display:flex;gap:8px;align-items:center}
+.tools .saved{font-size:12px;color:var(--ok);min-width:56px;text-align:right}
+details.menu{position:relative}
+details.menu summary{list-style:none;cursor:pointer;border:1px solid var(--line);background:#fff;padding:7px 12px;border-radius:8px;font-weight:600;font-size:14px}
+details.menu summary::-webkit-details-marker{display:none}
+details.menu .pop{position:absolute;right:0;top:40px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:6px;width:280px;z-index:10}
+.pop button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:9px 10px;border-radius:8px;font:inherit;cursor:pointer}
+.pop button:hover{background:var(--bg)}
+.pop small{display:block;color:var(--sub);font-size:12px}
+.pop hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.danger{color:var(--late)}
+.btn.sm{padding:4px 9px;font-size:13px}
+.warn{margin:12px 0 0;background:var(--latebg);border:1px solid #f3c1c1;color:#7f1d1d;padding:10px 14px;border-radius:10px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--sub);margin-bottom:10px}
+.scroll{overflow:auto;border:1px solid var(--line);border-radius:10px}
+table.grid{border-collapse:collapse;width:100%;min-width:980px;font-size:13px;background:#fff}
+.grid th,.grid td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:center;vertical-align:middle}
+.grid thead th{background:#f0f2f5;position:sticky;top:0;font-weight:700;color:#3b4756}
+.grid .c-task{text-align:left;min-width:300px;max-width:380px}
+.grid .c-cycle{white-space:nowrap;color:var(--sub);width:70px}
+.grid td.now,.grid th.now{background:#fff8ec}
+.grid thead th.now{background:#fde7c4}
+.catrow td{background:#fafbfc;text-align:left;font-weight:700;color:var(--c);padding:8px 10px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-right:7px}
+.tt{font-weight:600;line-height:1.35}
+.bs{font-size:12px;color:var(--sub);margin-top:1px}
+.adhoc{color:var(--sub);font-style:italic;background:#fafbfc}
+.kb{font-style:normal;font-size:11px;font-weight:700;padding:1px 6px;border-radius:999px;margin-right:6px;vertical-align:1px}
+.kb.law{background:#e8eefc;color:#1d4ed8}
+.kb.practice{background:#eee;color:#555}
+.cell{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;border:0;font-size:14px;font-weight:700}
+button.cell{cursor:pointer}
+.cell.due{background:transparent;color:var(--c);font-size:16px}
+.cell.done{background:var(--okbg);color:var(--ok)}
+.cell.late{background:var(--latebg);color:var(--late)}
+tr.prog td{background:#f0f2f5;font-weight:700;color:#3b4756}
+.mtabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.mtabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;color:var(--sub)}
+.mtabs button[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.mtabs button.cur{box-shadow:0 0 0 2px #fcd9b6}
+.summary{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:12px}
+.progress{flex:1;min-width:180px;height:10px;background:#e6e9ee;border-radius:999px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--ok)}
+h2.sec{font-size:16px;margin:18px 0 8px;display:flex;gap:8px;align-items:center}
+.item{display:flex;gap:10px;border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#fff}
+.item.done{background:#f7fbf8}
+.item.done .tt{text-decoration:line-through;color:var(--sub)}
+.chk input{width:20px;height:20px;margin-top:2px;cursor:pointer}
+.item .body{flex:1;min-width:0}
+.nt{font-size:13px;color:#4b5868;margin-top:4px;background:#f6f7f9;border-radius:6px;padding:6px 8px}
+.rec{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.rec input{border:1px solid var(--line);border-radius:8px;padding:5px 8px;font:inherit;font-size:13px}
+.rec input[type=text]{flex:1;min-width:200px}
+.due-tag{font-size:12px;color:var(--brand-d);background:var(--soft);padding:1px 7px;border-radius:999px;margin-left:6px;font-weight:600}
+.next{font-size:13px;color:var(--sub)}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.form label{display:flex;flex-direction:column;font-size:13px;font-weight:600;gap:4px}
+.form input,.form select,.form textarea{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;font-weight:400}
+.form .wide{grid-column:1/-1}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font:inherit;font-size:13px;cursor:pointer}
+.chips button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+table.list{width:100%;border-collapse:collapse;font-size:13px;min-width:860px}
+.list th,.list td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+.list th{background:#f0f2f5}
+.mini{display:inline-block;font-size:11px;background:#eef1f5;border-radius:4px;padding:0 5px;margin:1px 1px 0 0}
+.notes{margin-top:22px;font-size:13px;color:var(--sub);display:grid;gap:8px}
+.notes b{color:var(--ink)}
+#printRoot{display:none}
+@media (max-width:720px){h1{font-size:21px}.bar{position:static}details.menu .pop{right:auto;left:0}}
+@media print{
+ @page{size:A4 landscape;margin:9mm}
+ body.printing{background:#fff;font-size:10pt}
+ body.printing .wrap{display:none!important}
+ body.printing #printRoot{display:block}
+ #printRoot .psec{page-break-after:always}
+ #printRoot .psec:last-child{page-break-after:auto}
+ #printRoot h2{font-size:15pt;margin:0 0 4px}
+ #printRoot .pmeta{font-size:9pt;color:#444;margin-bottom:6px}
+ #printRoot .pfoot{font-size:8pt;color:#555;margin:6px 0 0}
+ #printRoot table{width:100%;min-width:0;border-collapse:collapse;font-size:8pt}
+ #printRoot th,#printRoot td{border:1px solid #bbb;padding:2px 3px}
+ #printRoot .c-task{min-width:0;max-width:none}
+ #printRoot .cell{width:auto;height:auto;background:none!important}
+ #printRoot .cell.late{color:#b91c1c}
+ #printRoot{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ #printRoot .box{font-size:11pt;text-align:center}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="top">
+  <div>
+   <div class="eyebrow">법정 안전업무</div>
+   <h1>산업안전관리자 1년 업무 캘린더</h1>
+   <p>중대재해처벌법 시행령 제4·5조와 산업안전보건법상 안전관리자 업무를 월별로 정리했습니다</p>
+  </div>
+  <div class="meta">
+   <label>사업장명<input id="company" placeholder="예) ○○제조(주)"></label>
+   <label>안전관리자<input id="manager" placeholder="이름"></label>
+  </div>
+ </header>
+ <noscript><div class="warn">이 페이지는 자바스크립트가 필요합니다.</div></noscript>
+ <div id="warn"></div>
+
+ <div class="bar">
+  <div class="yearnav"><button type="button" data-act="year" data-v="-1" aria-label="이전 해">‹</button><span id="yearLabel"></span><button type="button" data-act="year" data-v="1" aria-label="다음 해">›</button></div>
+  <div class="tabs" role="tablist" id="tabs">
+   <button type="button" role="tab" data-act="tab" data-v="annual">연간 한눈에</button>
+   <button type="button" role="tab" data-act="tab" data-v="month">월별 일정</button>
+   <button type="button" role="tab" data-act="tab" data-v="list">업무 목록 + 일정 추가</button>
+  </div>
+  <div class="tools">
+   <span class="saved" id="saved"></span>
+   <details class="menu" id="dl">
+    <summary>내려받기 ▾</summary>
+    <div class="pop">
+     <button type="button" data-act="xlsx">엑셀<small>연간표·월별 일정·기준표 (.xlsx)</small></button>
+     <button type="button" data-act="print-annual">PDF 연간 한눈에<small>A4 가로 1장 (인쇄창에서 'PDF로 저장')</small></button>
+     <button type="button" data-act="print-full">PDF 연간표 + 월별 점검표<small>월별 체크용 출력본</small></button>
+     <hr>
+     <button type="button" data-act="backup">백업 저장<small>다른 PC로 옮길 때 (.json)</small></button>
+     <button type="button" data-act="restore">백업 불러오기<small>저장해 둔 파일로 되돌리기</small></button>
+    </div>
+   </details>
+   <input type="file" id="file" accept=".json,application/json" hidden>
+  </div>
+ </div>
+
+ <main id="main"></main>
+
+ <section class="notes">
+  <div><b>저장 위치</b> 입력한 내용은 지금 쓰는 브라우저에만 저장되고 어디로도 전송되지 않습니다. 브라우저 기록을 지우면 함께 지워지니 [내려받기 → 백업 저장]으로 보관하세요.</div>
+  <div><b>법령 확인</b> 기본 틀은 중대재해 처벌 등에 관한 법률 시행령 제4조·제5조와 산업안전보건법령(안전관리자 업무: 시행령 제18조)을 바탕으로 한 제조업 일반 예시입니다. 업종·규모·적용 여부에 따라 대상과 주기가 다르고 법령은 개정되므로, 국가법령정보센터(law.go.kr) 원문으로 최종 확인하세요. 이 도구는 법률 자문이 아닙니다.</div>
+ </section>
+</div>
+<div id="printRoot"></div>
+
+<script>
+(function(){
+'use strict';
+var KEY='safetyMgrCalendar.v1';
+var MONTHS=[1,2,3,4,5,6,7,8,9,10,11,12];
+var Q=[3,6,9,12], H=[6,12];
+var CATS=[
+ {k:'A',name:'중대재해처벌법 시행령 제4조 (안전보건관리체계 구축·이행)',color:'#c2410c'},
+ {k:'B',name:'중대재해처벌법 시행령 제5조 (관계 법령 의무이행 점검)',color:'#0369a1'},
+ {k:'C',name:'산업안전보건법 시행령 제18조 (안전관리자 업무)',color:'#047857'},
+ {k:'D',name:'산업안전보건법 정기·수시 법정업무 및 실무',color:'#6d28d9'},
+ {k:'E',name:'사용자 추가 일정',color:'#475569'}
+];
+var DEFAULTS=[
+ {id:'A1',cat:'A',kind:'law',title:'안전보건 목표·경영방침 설정 및 검토',basis:'중처법 시행령 제4조 제1호',cycle:'연 1회',months:[1],note:'경영책임자 승인과 전 직원 공유 기록을 보관합니다. 점검 주기는 명시되지 않아 연초 설정을 기본값으로 했습니다.'},
+ {id:'A2',cat:'A',kind:'law',title:'안전보건 업무 전담조직 설치·운영 확인',basis:'중처법 시행령 제4조 제2호',cycle:'연 1회',months:[1],note:'상시근로자 500명 이상 등 해당되는 사업장에 적용됩니다. 해당 여부는 원문으로 확인하세요.'},
+ {id:'A3',cat:'A',kind:'law',title:'유해·위험요인 확인·개선 절차 이행 점검',basis:'중처법 시행령 제4조 제3호',cycle:'반기',months:H,note:'반기 1회 이상 점검하고 필요한 조치를 합니다. 위험성평가 결과·개선 이력과 연계하세요. (반기 마감 월 기준, 앞당겨 해도 됩니다)'},
+ {id:'A4',cat:'A',kind:'law',title:'안전보건 예산 편성·집행 확인',basis:'중처법 시행령 제4조 제4호',cycle:'연 1회+반기 확인',months:[1,6,12],note:'1월에 편성·승인, 6·12월에 집행 내역을 확인합니다. (반기 확인은 실무 기본값)'},
+ {id:'A5',cat:'A',kind:'law',title:'안전보건관리책임자 등 업무수행 평가',basis:'중처법 시행령 제4조 제5호',cycle:'반기',months:H,note:'평가기준을 마련하고 반기 1회 이상 평가합니다. 평가 결과 기록을 보관하세요.'},
+ {id:'A6',cat:'A',kind:'law',title:'안전·보건 전문인력(안전관리자·보건관리자·산업보건의) 배치 현황 확인',basis:'중처법 시행령 제4조 제6호',cycle:'반기',months:H,note:'법정 점검 주기는 명시되지 않아 반기 점검 때 함께 확인하는 실무 기본값입니다.'},
+ {id:'A7',cat:'A',kind:'law',title:'종사자 의견 청취 및 개선방안 이행 점검',basis:'중처법 시행령 제4조 제7호',cycle:'반기',months:H,note:'개선방안의 마련·이행 여부를 반기 1회 이상 점검합니다. 접수·검토·조치 기록을 남기세요.'},
+ {id:'A8',cat:'A',kind:'law',title:'중대산업재해 발생 대비 대응 매뉴얼 점검',basis:'중처법 시행령 제4조 제8호',cycle:'반기',months:H,note:'작업중지·근로자 대피·위험요인 제거, 구호조치, 보고 등 절차를 점검하고 개정 내용을 공지합니다.'},
+ {id:'A9',cat:'A',kind:'law',title:'도급·용역·위탁 수급인 평가기준·관리비용·기간 기준 점검',basis:'중처법 시행령 제4조 제9호',cycle:'반기',months:H,note:'도급·용역·위탁 관계가 있는 경우에 해당합니다.'},
+ {id:'B1',cat:'B',kind:'law',title:'안전·보건 관계 법령 의무이행 점검 및 결과 보고',basis:'중처법 시행령 제5조 제2항 제1호·제2호',cycle:'반기',months:H,note:'점검 결과를 경영책임자에게 보고하고, 미이행 사항은 지체 없이 조치(예산 확보 포함)합니다. 소방·전기·화학물질 등 사업장에 적용되는 법령을 점검표에 포함하세요.'},
+ {id:'B2',cat:'B',kind:'law',title:'유해·위험작업 법정 안전보건교육 실시 여부 점검',basis:'중처법 시행령 제5조 제2항 제3호·제4호',cycle:'반기',months:H,note:'교육 미실시 건은 지체 없이 이행 지시·예산 확보 등 조치를 합니다.'},
+ {id:'B3',cat:'B',kind:'law',title:'점검·평가 결과 서면 기록 정리·보존 확인',basis:'중처법 시행령 서류 보관 규정(5년)',cycle:'연 1회',months:[12],note:'기록 보관 기간과 조문 번호는 원문으로 확인하세요.'},
+ {id:'C1',cat:'C',kind:'law',title:'사업장 순회점검·지도 및 조치 건의',basis:'산안법 시행령 제18조 제1항 제5호',cycle:'매월',months:MONTHS,note:'순회 주기는 안전보건관리규정에 따라 정하고, 월말에 결과와 시정조치 현황을 정리합니다.'},
+ {id:'C2',cat:'C',kind:'law',title:'위험성평가 정기평가 보좌·지도·조언',basis:'산안법 제36조, 시행령 제18조 제1항 제2호',cycle:'연 1회',months:[3],note:'정기평가는 매년 실시하고, 설비·작업 변경 시에는 수시평가를 합니다. 시기는 사업장 일정에 맞게 조정하세요.'},
+ {id:'C3',cat:'C',kind:'law',title:'산업안전보건위원회(노사협의체) 심의·의결 사항 이행 점검',basis:'산안법 시행령 제18조 제1항 제1호',cycle:'분기',months:Q,note:'안전보건관리규정·취업규칙에서 정한 업무 이행도 함께 확인합니다.'},
+ {id:'C4',cat:'C',kind:'law',title:'연간 안전교육계획 수립 및 교육 실시 보좌',basis:'산안법 시행령 제18조 제1항 제4호',cycle:'연 1회',months:[1],note:'정기교육·채용 시·작업내용 변경 시·특별교육 계획을 함께 세웁니다.'},
+ {id:'C5',cat:'C',kind:'law',title:'안전인증·자율안전확인 대상 기계·기구 구입 시 적격품 선정 보좌',basis:'산안법 시행령 제18조 제1항 제3호',cycle:'수시',months:[],note:'기계·기구 구입·교체 계획이 있을 때 인증·확인 여부를 확인합니다.'},
+ {id:'C6',cat:'C',kind:'law',title:'산업재해 원인 조사·분석 및 재발방지 대책 보좌',basis:'산안법 시행령 제18조 제1항 제6호',cycle:'수시',months:[],note:'중처법 제4조 제1항 제2호(재발방지 대책 수립·이행)와 함께 관리합니다.'},
+ {id:'C7',cat:'C',kind:'law',title:'산업재해 통계 유지·관리·분석',basis:'산안법 시행령 제18조 제1항 제7호',cycle:'매월',months:MONTHS,note:'월별 재해 현황을 갱신하고 12월에 연간 분석을 합니다.'},
+ {id:'C8',cat:'C',kind:'law',title:'안전관리자 업무수행 내용 기록·유지',basis:'산안법 시행령 제18조 제1항 제9호',cycle:'매월',months:MONTHS,note:'월 단위로 업무일지·점검 기록을 정리합니다.'},
+ {id:'D1',cat:'D',kind:'law',title:'산업안전보건위원회 정기회의 개최',basis:'산안법 제24조, 시행령 제37조',cycle:'분기',months:Q,note:'설치 대상 사업장에 해당합니다. 회의록을 작성·보존하고 결정 사항을 근로자에게 알립니다.'},
+ {id:'D2',cat:'D',kind:'law',title:'근로자 정기 안전보건교육',basis:'산안법 제29조, 시행규칙 별표 4',cycle:'분기',months:Q,note:'사무직 매분기 3시간 이상, 사무직 외 근로자 매분기 6시간 이상(판매업무 직접 종사자는 3시간). 시간은 개정될 수 있으니 별표 원문을 확인하고, 교육일지·출석부를 보존하세요.'},
+ {id:'D3',cat:'D',kind:'law',title:'관리감독자 정기교육 이수 확인',basis:'산안법 제29조, 시행규칙 별표 4',cycle:'연 1회',months:[11],note:'연간 16시간 이상 이수 여부를 연말 전에 확인합니다.'},
+ {id:'D4',cat:'D',kind:'law',title:'안전관리자 직무교육(신규·보수) 이수 관리',basis:'산안법 제32조',cycle:'수시',months:[],note:'신규교육은 선임 후 3개월 이내, 보수교육은 신규교육 이수 후 2년마다(기준일 전후 3개월). 시간·시기는 원문으로 확인하세요.'},
+ {id:'D5',cat:'D',kind:'law',title:'도급사업 안전보건 협의체 정기 개최',basis:'산안법 제64조, 시행규칙 제79조',cycle:'매월',months:MONTHS,note:'도급인 사업장에서 관계수급인과 함께 작업하는 경우에 해당합니다. 월 1회 이상 개최합니다.'},
+ {id:'D6',cat:'D',kind:'law',title:'도급인 작업장 순회점검 기록 확인',basis:'산안법 제64조, 시행규칙 제80조',cycle:'상시',months:MONTHS,note:'제조업은 2일에 1회 이상(그 외 업종은 주 1회 이상). 월말에 점검 기록을 확인합니다.'},
+ {id:'D7',cat:'D',kind:'law',title:'유해·위험 기계·기구 안전검사 도래 확인',basis:'산안법 제93조, 시행규칙 제126조',cycle:'연 1회',months:[1],note:'검사 시기(설치 후 3년 이내 최초, 이후 2년마다 등)를 기계별 대장으로 관리하고 도래 전에 신청합니다. 대상·주기는 기계별로 다르니 원문을 확인하세요.'},
+ {id:'D8',cat:'D',kind:'law',title:'산업재해 발생 보고·기록',basis:'산안법 제54조·제57조, 시행규칙 제72조·제73조',cycle:'수시',months:[],note:'사망 등 중대재해는 지체 없이 보고, 3일 이상 휴업 재해는 발생일부터 1개월 이내 산업재해조사표를 제출합니다. 발생 기록은 3년 보존합니다.'},
+ {id:'D9',cat:'D',kind:'law',title:'안전보건관리규정 검토·변경',basis:'산안법 제25조·제26조',cycle:'연 1회',months:[12],note:'변경 사유가 생기면 30일 이내에 변경합니다. 작성 대상 여부도 확인하세요.'},
+ {id:'D10',cat:'D',kind:'practice',title:'연간 안전보건 업무계획 수립 및 전년 실적 평가',basis:'실무 권장',cycle:'연 1회',months:[1],note:'전년 재해·점검·교육 실적을 분석해 연간 계획에 반영합니다.'},
+ {id:'D11',cat:'D',kind:'practice',title:'폭염 대비 점검 (온열질환 예방)',basis:'산업안전보건기준에 관한 규칙, 실무 권장',cycle:'연 1회',months:[5],note:'휴식·음료·그늘 등을 점검합니다. 열사병은 중처법상 직업성 질병 범위에 포함됩니다.'},
+ {id:'D12',cat:'D',kind:'practice',title:'동절기(한랭) 대비 점검',basis:'실무 권장',cycle:'연 1회',months:[11],note:'난방·결빙·한랭 노출 작업, 화기·전기 설비 점검 등.'}
+];
+var now=new Date();
+var today={y:now.getFullYear(),m:now.getMonth()+1,d:now.getDate()};
+var year=today.y, month=today.m, view='annual';
+var storageOK=true, draft=null, savedTimer=null;
+var state=load();
+
+function $(s){return document.querySelector(s);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function pad(n){return n<10?'0'+n:''+n;}
+function todayStr(){return today.y+'-'+pad(today.m)+'-'+pad(today.d);}
+function catOf(k){for(var i=0;i<CATS.length;i++){if(CATS[i].k===k)return CATS[i];}return CATS[CATS.length-1];}
+function kb(t){return '<i class="kb '+t.kind+'">'+(t.kind==='law'?'법정':'실무')+'</i>';}
+
+/* ---------- 저장 ---------- */
+function fresh(){return {v:1,meta:{company:'',manager:''},tasks:clone(DEFAULTS),done:{}};}
+function valid(s){
+ if(!s||typeof s!=='object'||!Array.isArray(s.tasks)||!s.done||typeof s.done!=='object')return false;
+ for(var i=0;i<s.tasks.length;i++){var t=s.tasks[i];if(!t||typeof t.id!=='string'||typeof t.title!=='string'||!Array.isArray(t.months))return false;}
+ return true;
+}
+function normalize(s){
+ s.meta=s.meta||{company:'',manager:''};
+ s.tasks.forEach(function(t){
+  t.cat=CATS.some(function(c){return c.k===t.cat;})?t.cat:'E';
+  t.kind=t.kind==='law'?'law':'practice';
+  t.basis=t.basis||'';t.cycle=t.cycle||'';t.note=t.note||'';
+  t.months=t.months.map(Number).filter(function(m){return m>=1&&m<=12;});
+ });
+ return s;
+}
+function load(){
+ try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);if(valid(s))return normalize(s);}}
+ catch(e){storageOK=false;}
+ return fresh();
+}
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify(state));flashSaved();}
+ catch(e){storageOK=false;renderWarn();}
+}
+function flashSaved(){
+ var el=$('#saved');if(!el)return;
+ el.textContent='저장됨 ✓';
+ clearTimeout(savedTimer);
+ savedTimer=setTimeout(function(){el.textContent='';},1600);
+}
+function renderWarn(){
+ $('#warn').innerHTML=storageOK?'':'<div class="warn">이 환경에서는 브라우저 저장이 막혀 있습니다. 새로고침하면 입력한 내용이 사라지니 [내려받기 → 백업 저장]을 자주 해주세요.</div>';
+}
+
+/* ---------- 완료 기록 ---------- */
+function recOf(id,m){var y=state.done[year];return (y&&y[id]&&y[id][m])||null;}
+function isDone(id,m){var r=recOf(id,m);return !!(r&&r.ok);}
+function ensureRec(id,m){
+ var y=state.done[year]=state.done[year]||{};
+ var t=y[id]=y[id]||{};
+ return t[m]=t[m]||{};
+}
+function setDone(id,m,flag,dateStr){
+ var r=ensureRec(id,m);
+ r.ok=!!flag;r.d=flag?(dateStr||todayStr()):'';
+ save();
+}
+function isPast(mo){return year<today.y||(year===today.y&&mo<today.m);}
+function monthStatus(t,mo){
+ if(t.months.indexOf(mo)<0)return 'none';
+ if(isDone(t.id,mo))return 'done';
+ return isPast(mo)?'late':'due';
+}
+
+/* ---------- 연간 표 ---------- */
+function annualTable(inter){
+ var cm=(year===today.y)?today.m:0;
+ var h='<table class="grid annual"><thead><tr><th class="c-task">업무 · 근거</th><th class="c-cycle">주기</th>';
+ MONTHS.forEach(function(m){h+='<th class="'+(m===cm?'now':'')+'">'+m+'월</th>';});
+ h+='</tr></thead><tbody>';
+ CATS.forEach(function(cat){
+  var ts=state.tasks.filter(function(t){return t.cat===cat.k;});
+  if(!ts.length)return;
+  h+='<tr class="catrow" style="--c:'+cat.color+'"><td colspan="14"><span class="dot"></span>'+esc(cat.name)+'</td></tr>';
+  ts.forEach(function(t){
+   h+='<tr style="--c:'+cat.color+'"><td class="c-task"><div class="tt">'+kb(t)+esc(t.title)+'</div><div class="bs">'+esc(t.basis)+'</div></td><td class="c-cycle">'+esc(t.cycle)+'</td>';
+   if(!t.months.length){
+    h+='<td colspan="12" class="adhoc">발생·필요 시 수시 수행</td>';
+   }else{
+    MONTHS.forEach(function(m){
+     var st=monthStatus(t,m),inner='';
+     if(st!=='none'){
+      var sym=st==='done'?'✔':(st==='late'?'!':'●');
+      inner=inter
+       ?'<button type="button" class="cell '+st+'" data-act="cell" data-t="'+esc(t.id)+'" data-m="'+m+'" title="'+m+'월 · '+(st==='done'?'완료 (눌러서 취소)':'눌러서 완료 처리')+'">'+sym+'</button>'
+       :'<span class="cell '+st+'">'+sym+'</span>';
+     }
+     h+='<td class="'+(m===cm?'now':'')+'">'+inner+'</td>';
+    });
+   }
+   h+='</tr>';
+  });
+ });
+ h+='<tr class="prog"><td class="c-task" colspan="2">월별 완료 / 예정</td>';
+ MONTHS.forEach(function(m){
+  var sc=state.tasks.filter(function(t){return t.months.indexOf(m)>=0;});
+  var dn=sc.filter(function(t){return isDone(t.id,m);}).length;
+  h+='<td class="'+(m===cm?'now':'')+'">'+dn+'/'+sc.length+'</td>';
+ });
+ h+='</tr></tbody></table>';
+ return h;
+}
+function renderAnnual(){
+ return '<div class="card"><div class="legend"><span>● 예정</span><span>✔ 완료</span><span style="color:var(--late)">! 기한 경과·미완료</span><span>칸을 누르면 완료 처리/취소됩니다 · 자세한 메모는 [월별 일정]에서</span></div><div class="scroll">'+annualTable(true)+'</div></div>';
+}
+
+/* ---------- 월별 ---------- */
+function itemHTML(t,m,adhoc){
+ var r=recOf(t.id,m)||{};
+ var cat=catOf(t.cat);
+ return '<div class="item'+(r.ok?' done':'')+'" style="--c:'+cat.color+'">'
+  +'<label class="chk"><input type="checkbox" data-act="chk" data-t="'+esc(t.id)+'" data-m="'+m+'"'+(r.ok?' checked':'')+' aria-label="완료"></label>'
+  +'<div class="body"><div class="tt">'+kb(t)+esc(t.title)+(t.day?'<span class="due-tag">'+m+'월 '+esc(t.day)+'일까지</span>':'')+'</div>'
+  +'<div class="bs">'+esc(t.basis)+' · '+esc(t.cycle)+(adhoc?' · 이달 처리·확인 시 체크':'')+'</div>'
+  +(t.note?'<div class="nt">'+esc(t.note)+'</div>':'')
+  +'<div class="rec"><input type="date" data-act="date" data-t="'+esc(t.id)+'" data-m="'+m+'" value="'+esc(r.d||'')+'" title="완료일">'
+  +'<input type="text" data-act="memo" data-t="'+esc(t.id)+'" data-m="'+m+'" placeholder="메모 (점검 결과, 문서 위치 등)" value="'+esc(r.m||'')+'"></div></div></div>';
+}
+function renderMonth(){
+ var items=state.tasks.filter(function(t){return t.months.indexOf(month)>=0;});
+ var adhoc=state.tasks.filter(function(t){return !t.months.length;});
+ var done=items.filter(function(t){return isDone(t.id,month);}).length;
+ var pct=items.length?Math.round(done/items.length*100):0;
+ var h='<div class="card"><div class="mtabs" role="tablist">';
+ MONTHS.forEach(function(m){
+  var n=state.tasks.filter(function(t){return t.months.indexOf(m)>=0;}).length;
+  h+='<button type="button" role="tab" aria-selected="'+(m===month)+'" class="'+((year===today.y&&m===today.m)?'cur':'')+'" data-act="mtab" data-v="'+m+'">'+m+'월 <small>'+n+'</small></button>';
+ });
+ h+='</div><div class="summary"><b>'+year+'년 '+month+'월</b><span>'+done+' / '+items.length+' 완료</span><div class="progress"><i style="width:'+pct+'%"></i></div></div>';
+ CATS.forEach(function(cat){
+  var ts=items.filter(function(t){return t.cat===cat.k;});
+  if(!ts.length)return;
+  h+='<h2 class="sec" style="color:'+cat.color+'">'+esc(cat.name)+'</h2>';
+  ts.forEach(function(t){h+=itemHTML(t,month,false);});
+ });
+ if(!items.length)h+='<p class="next">이달에 예정된 업무가 없습니다.</p>';
+ if(adhoc.length){
+  h+='<h2 class="sec">수시·발생 시 업무</h2>';
+  adhoc.forEach(function(t){h+=itemHTML(t,month,true);});
+ }
+ var nm=month===12?1:month+1;
+ var nx=state.tasks.filter(function(t){return t.months.indexOf(nm)>=0;});
+ h+='<h2 class="sec">다음 달('+nm+'월) 예정 미리보기</h2><div class="next">'+(nx.length?nx.map(function(t){return esc(t.title);}).join(' · '):'예정 없음')+'</div></div>';
+ return h;
+}
+
+/* ---------- 업무 목록 ---------- */
+function blankDraft(){return {id:'',cat:'E',kind:'practice',title:'',basis:'',cycle:'연 1회',months:[],day:'',note:''};}
+function formHTML(){
+ if(!draft)return '<div class="card"><button type="button" class="btn primary" data-act="add">+ 일정 추가</button> <button type="button" class="btn" data-act="reset-defaults">기본 항목 복원</button><span class="next"> 소방·전기·화학물질 등 사업장에 적용되는 다른 법령 점검도 직접 추가해 관리할 수 있습니다.</span></div>';
+ var h='<div class="card"><h2 class="sec" style="margin-top:0">'+(draft.id?'업무 수정':'일정 추가')+'</h2><div class="form">';
+ h+='<label>구분<select data-act="f" data-f="cat">'+CATS.map(function(c){return '<option value="'+c.k+'"'+(draft.cat===c.k?' selected':'')+'>'+esc(c.name)+'</option>';}).join('')+'</select></label>';
+ h+='<label>성격<select data-act="f" data-f="kind"><option value="law"'+(draft.kind==='law'?' selected':'')+'>법정</option><option value="practice"'+(draft.kind==='practice'?' selected':'')+'>실무·자체</option></select></label>';
+ h+='<label class="wide">업무명<input data-act="f" data-f="title" value="'+esc(draft.title)+'" placeholder="예) 소방시설 작동점검"></label>';
+ h+='<label class="wide">근거 법령·조문<input data-act="f" data-f="basis" value="'+esc(draft.basis)+'" placeholder="예) 소방시설법 제25조"></label>';
+ h+='<div class="wide"><b style="font-size:13px">주기 (빠른 선택)</b><div class="chips" style="margin-top:6px">'
+  +[['monthly','매월'],['quarter','분기'],['half','반기'],['year','연 1회'],['adhoc','수시']].map(function(p){return '<button type="button" data-act="preset" data-v="'+p[0]+'">'+p[1]+'</button>';}).join('')+'</div></div>';
+ h+='<label>주기 표시<input data-act="f" data-f="cycle" value="'+esc(draft.cycle)+'"></label>';
+ h+='<label>기한 일(선택)<input type="number" min="1" max="31" data-act="f" data-f="day" value="'+esc(draft.day)+'" placeholder="예) 25"></label>';
+ h+='<div class="wide"><b style="font-size:13px">해당 월 (수시 업무는 선택하지 않음)</b><div class="chips" style="margin-top:6px">'
+  +MONTHS.map(function(m){return '<button type="button" class="'+(draft.months.indexOf(m)>=0?'on':'')+'" data-act="mchip" data-v="'+m+'">'+m+'월</button>';}).join('')+'</div></div>';
+ h+='<label class="wide">비고<textarea rows="2" data-act="f" data-f="note">'+esc(draft.note)+'</textarea></label>';
+ h+='</div><div style="margin-top:12px;display:flex;gap:8px"><button type="button" class="btn primary" data-act="save-task">'+(draft.id?'수정 저장':'추가')+'</button><button type="button" class="btn" data-act="cancel">취소</button></div></div>';
+ return h;
+}
+function renderList(){
+ var h=formHTML()+'<div class="card"><div class="scroll"><table class="list"><thead><tr><th>구분</th><th>업무</th><th>근거</th><th>주기</th><th>해당 월</th><th></th></tr></thead><tbody>';
+ state.tasks.forEach(function(t){
+  var cat=catOf(t.cat);
+  h+='<tr><td style="color:'+cat.color+';font-weight:700;white-space:nowrap">'+esc(cat.k==='E'?'추가':cat.k)+'</td>'
+   +'<td><div class="tt">'+kb(t)+esc(t.title)+'</div>'+(t.note?'<div class="bs">'+esc(t.note)+'</div>':'')+'</td>'
+   +'<td>'+esc(t.basis)+'</td><td style="white-space:nowrap">'+esc(t.cycle)+'</td>'
+   +'<td>'+(t.months.length?t.months.map(function(m){return '<span class="mini">'+m+'월</span>';}).join(''):'<span class="mini">수시</span>')+(t.day?' <span class="mini">~'+esc(t.day)+'일</span>':'')+'</td>'
+   +'<td style="white-space:nowrap"><button type="button" class="btn sm" data-act="edit" data-t="'+esc(t.id)+'">수정</button> <button type="button" class="btn sm danger" data-act="del" data-t="'+esc(t.id)+'">삭제</button></td></tr>';
+ });
+ h+='</tbody></table></div></div>';
+ return h;
+}
+
+/* ---------- 화면 ---------- */
+function render(){
+ $('#yearLabel').textContent=year+'년';
+ var tabs=document.querySelectorAll('#tabs button');
+ for(var i=0;i<tabs.length;i++){tabs[i].setAttribute('aria-selected',tabs[i].dataset.v===view?'true':'false');}
+ $('#main').innerHTML=view==='annual'?renderAnnual():(view==='month'?renderMonth():renderList());
+ $('#company').value=state.meta.company||'';
+ $('#manager').value=state.meta.manager||'';
+ renderWarn();
+}
+
+/* ---------- 내려받기 ---------- */
+function download(name,blob){
+ var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;
+ document.body.appendChild(a);a.click();a.remove();
+ setTimeout(function(){URL.revokeObjectURL(a.href);},1500);
+}
+function monthRows(){
+ var rows=[['월','구분','업무','근거','주기','완료','완료일','메모']];
+ MONTHS.forEach(function(m){
+  state.tasks.filter(function(t){return t.months.indexOf(m)>=0;}).forEach(function(t){
+   var r=recOf(t.id,m)||{};
+   rows.push([m+'월',catOf(t.cat).name,t.title,t.basis,t.cycle,r.ok?'완료':'미완료',r.d||'',r.m||'']);
+  });
+ });
+ state.tasks.filter(function(t){return !t.months.length;}).forEach(function(t){
+  rows.push(['수시',catOf(t.cat).name,t.title,t.basis,t.cycle,'','','']);
+ });
+ return rows;
+}
+function exportXlsx(){
+ if(!window.XLSX){
+  alert('엑셀 라이브러리를 불러오지 못했습니다(인터넷 연결 필요). 대신 월별 일정을 CSV로 내려받습니다. CSV는 엑셀에서 열 수 있습니다.');
+  exportCsv();return;
+ }
+ var wb=XLSX.utils.book_new();
+ var head=['구분','업무','근거','주기','성격'].concat(MONTHS.map(function(m){return m+'월';})).concat(['비고']);
+ var a=[[year+'년 산업안전관리자 업무 연간표'],['사업장: '+(state.meta.company||''),'안전관리자: '+(state.meta.manager||'')],[],head];
+ state.tasks.forEach(function(t){
+  a.push([catOf(t.cat).name,t.title,t.basis,t.cycle,t.kind==='law'?'법정':'실무'].concat(MONTHS.map(function(m){
+   var s=monthStatus(t,m);return s==='none'?'':(s==='done'?'✔':'●');
+  })).concat([t.note]));
+ });
+ var ws1=XLSX.utils.aoa_to_sheet(a);
+ ws1['!cols']=[{wch:30},{wch:48},{wch:30},{wch:12},{wch:7}].concat(MONTHS.map(function(){return {wch:5};})).concat([{wch:60}]);
+ XLSX.utils.book_append_sheet(wb,ws1,'연간표');
+ var ws2=XLSX.utils.aoa_to_sheet(monthRows());
+ ws2['!cols']=[{wch:7},{wch:30},{wch:48},{wch:30},{wch:12},{wch:8},{wch:12},{wch:40}];
+ XLSX.utils.book_append_sheet(wb,ws2,'월별 일정');
+ var b=[['구분','업무','근거','주기','성격','해당 월','기한 일','비고']];
+ state.tasks.forEach(function(t){
+  b.push([catOf(t.cat).name,t.title,t.basis,t.cycle,t.kind==='law'?'법정':'실무',t.months.length?t.months.join(','):'수시',t.day||'',t.note]);
+ });
+ var ws3=XLSX.utils.aoa_to_sheet(b);
+ ws3['!cols']=[{wch:30},{wch:48},{wch:30},{wch:12},{wch:7},{wch:16},{wch:8},{wch:70}];
+ XLSX.utils.book_append_sheet(wb,ws3,'기준표');
+ XLSX.writeFile(wb,'산업안전관리자_업무캘린더_'+year+'.xlsx');
+}
+function exportCsv(){
+ var csv=monthRows().map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\r\n');
+ download('산업안전관리자_월별일정_'+year+'.csv',new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));
+}
+function backup(){
+ var data={app:'safety-manager-calendar',v:1,exported:new Date().toISOString(),data:state};
+ download('산업안전관리자_캘린더_백업_'+todayStr()+'.json',new Blob([JSON.stringify(data,null,1)],{type:'application/json'}));
+}
+function importBackup(file){
+ var fr=new FileReader();
+ fr.onload=function(){
+  try{
+   var j=JSON.parse(fr.result);
+   var s=j&&j.data?j.data:j;
+   if(!valid(s))throw new Error('형식이 맞지 않습니다');
+   if(!confirm('현재 입력된 내용을 이 백업 파일의 내용으로 바꿉니다. 계속할까요?'))return;
+   state=normalize(s);save();render();
+  }catch(e){alert('백업 파일을 읽지 못했습니다: '+e.message);}
+ };
+ fr.readAsText(file);
+}
+
+/* ---------- 인쇄(PDF) ---------- */
+function printMeta(){
+ return '<div class="pmeta">사업장: <b>'+(esc(state.meta.company)||'-')+'</b> · 안전관리자: <b>'+(esc(state.meta.manager)||'-')+'</b> · 출력일 '+todayStr()+'</div>';
+}
+function monthPrint(m){
+ var items=state.tasks.filter(function(t){return t.months.indexOf(m)>=0;});
+ var h='<section class="psec"><h2>'+year+'년 '+m+'월 안전관리자 업무 점검표</h2>'+printMeta()
+  +'<table><thead><tr><th style="width:6%">구분</th><th>업무</th><th style="width:22%">근거</th><th style="width:7%">주기</th><th style="width:6%">완료</th><th style="width:9%">완료일</th><th style="width:20%">확인·메모</th></tr></thead><tbody>';
+ items.forEach(function(t){
+  var r=recOf(t.id,m)||{};
+  h+='<tr><td>'+esc(t.cat==='E'?'추가':t.cat)+'</td><td>'+esc(t.title)+'</td><td>'+esc(t.basis)+'</td><td>'+esc(t.cycle)+'</td><td class="box">'+(r.ok?'☑':'☐')+'</td><td>'+esc(r.d||'')+'</td><td>'+esc(r.m||'')+'</td></tr>';
+ });
+ h+='</tbody></table><p class="pfoot">구분: A 중처법 시행령 제4조 · B 중처법 시행령 제5조 · C 산안법 시행령 제18조 · D 산안법 정기·수시 · 추가 사용자 일정</p></section>';
+ return h;
+}
+function adhocPrint(){
+ var ts=state.tasks.filter(function(t){return !t.months.length;});
+ if(!ts.length)return '';
+ var h='<section class="psec"><h2>수시·발생 시 업무</h2>'+printMeta()+'<table><thead><tr><th>업무</th><th style="width:26%">근거</th><th style="width:40%">비고</th></tr></thead><tbody>';
+ ts.forEach(function(t){h+='<tr><td>'+esc(t.title)+'</td><td>'+esc(t.basis)+'</td><td>'+esc(t.note)+'</td></tr>';});
+ return h+'</tbody></table></section>';
+}
+function doPrint(mode){
+ var h='<section class="psec"><h2>'+year+'년 산업안전관리자 연간 업무 캘린더</h2>'+printMeta()+annualTable(false)
+  +'<p class="pfoot">● 예정 · ✔ 완료 · ! 기한 경과·미완료. 기본 틀은 법령 원문 확인 후 사용하세요.</p></section>';
+ if(mode==='full'){MONTHS.forEach(function(m){h+=monthPrint(m);});h+=adhocPrint();}
+ $('#printRoot').innerHTML=h;
+ document.body.classList.add('printing');
+ setTimeout(function(){window.print();},50);
+}
+window.addEventListener('afterprint',function(){document.body.classList.remove('printing');});
+
+/* ---------- 이벤트 ---------- */
+function presetMonths(p){
+ if(p==='monthly'){draft.months=MONTHS.slice();draft.cycle='매월';}
+ else if(p==='quarter'){draft.months=Q.slice();draft.cycle='분기';}
+ else if(p==='half'){draft.months=H.slice();draft.cycle='반기';}
+ else if(p==='year'){draft.months=[draft.months[0]||1];draft.cycle='연 1회';}
+ else if(p==='adhoc'){draft.months=[];draft.cycle='수시';}
+}
+function saveDraft(){
+ var t=draft;
+ if(!t.title.trim()){alert('업무명을 입력해 주세요.');return;}
+ if(!t.months.length&&t.cycle.trim()!=='수시'&&!confirm('해당 월이 선택되지 않았습니다. 수시 업무로 저장할까요?'))return;
+ var day=parseInt(t.day,10);
+ var obj={id:t.id,cat:t.cat,kind:t.kind,title:t.title.trim(),basis:t.basis.trim(),cycle:t.cycle.trim()||(t.months.length?'':'수시'),months:t.months.slice().sort(function(a,b){return a-b;}),note:t.note.trim(),day:(day>=1&&day<=31)?String(day):''};
+ if(obj.id){
+  for(var i=0;i<state.tasks.length;i++){if(state.tasks[i].id===obj.id){state.tasks[i]=obj;break;}}
+ }else{
+  obj.id='U'+Date.now().toString(36)+Math.floor(Math.random()*1296).toString(36);
+  state.tasks.push(obj);
+ }
+ draft=null;save();render();
+}
+function deleteTask(id){
+ var t=null;state.tasks.forEach(function(x){if(x.id===id)t=x;});
+ if(!t||!confirm('"'+t.title+'" 업무를 삭제합니다. 이 업무의 완료 기록도 함께 지워집니다. 계속할까요?'))return;
+ state.tasks=state.tasks.filter(function(x){return x.id!==id;});
+ Object.keys(state.done).forEach(function(y){delete state.done[y][id];});
+ save();render();
+}
+function resetDefaults(){
+ var have={};state.tasks.forEach(function(t){have[t.id]=1;});
+ var add=DEFAULTS.filter(function(t){return !have[t.id];});
+ if(!add.length){alert('삭제된 기본 항목이 없습니다.');return;}
+ if(!confirm('삭제했던 기본 항목 '+add.length+'개를 다시 추가합니다. 수정한 항목은 그대로 둡니다.'))return;
+ add.forEach(function(t){state.tasks.push(clone(t));});
+ state.tasks.sort(function(a,b){
+  var ia=CATS.findIndex(function(c){return c.k===a.cat;}),ib=CATS.findIndex(function(c){return c.k===b.cat;});
+  return ia-ib;
+ });
+ save();render();
+}
+document.addEventListener('click',function(e){
+ var b=e.target.closest('[data-act]');if(!b)return;
+ var a=b.dataset.act,v=b.dataset.v;
+ if(b.tagName==='INPUT'||b.tagName==='SELECT'||b.tagName==='TEXTAREA')return;
+ var dl=$('#dl');
+ if(a==='year'){year+=parseInt(v,10);render();}
+ else if(a==='tab'){view=v;render();}
+ else if(a==='mtab'){month=parseInt(v,10);render();}
+ else if(a==='cell'){var m=parseInt(b.dataset.m,10);setDone(b.dataset.t,m,!isDone(b.dataset.t,m));render();}
+ else if(a==='add'){draft=blankDraft();render();}
+ else if(a==='cancel'){draft=null;render();}
+ else if(a==='edit'){
+  var t=state.tasks.filter(function(x){return x.id===b.dataset.t;})[0];
+  if(t){draft=clone(t);draft.day=t.day||'';view='list';render();window.scrollTo(0,0);}
+ }
+ else if(a==='del'){deleteTask(b.dataset.t);}
+ else if(a==='save-task'){saveDraft();}
+ else if(a==='preset'){presetMonths(v);render();}
+ else if(a==='mchip'){
+  var mm=parseInt(v,10),i=draft.months.indexOf(mm);
+  if(i>=0)draft.months.splice(i,1);else draft.months.push(mm);
+  render();
+ }
+ else if(a==='reset-defaults'){resetDefaults();}
+ else if(a==='xlsx'){dl.open=false;exportXlsx();}
+ else if(a==='print-annual'){dl.open=false;doPrint('annual');}
+ else if(a==='print-full'){dl.open=false;doPrint('full');}
+ else if(a==='backup'){dl.open=false;backup();}
+ else if(a==='restore'){dl.open=false;$('#file').click();}
+});
+document.addEventListener('change',function(e){
+ var el=e.target,a=el.dataset&&el.dataset.act;
+ if(el.id==='file'){if(el.files&&el.files[0])importBackup(el.files[0]);el.value='';return;}
+ if(a==='chk'){setDone(el.dataset.t,parseInt(el.dataset.m,10),el.checked);render();}
+ else if(a==='date'){
+  var m=parseInt(el.dataset.m,10);
+  if(el.value)setDone(el.dataset.t,m,true,el.value);else setDone(el.dataset.t,m,false);
+  render();
+ }
+ else if(a==='f'&&draft){draft[el.dataset.f]=el.value;}
+});
+document.addEventListener('input',function(e){
+ var el=e.target,a=el.dataset&&el.dataset.act;
+ if(a==='memo'){var r=ensureRec(el.dataset.t,parseInt(el.dataset.m,10));r.m=el.value;save();}
+ else if(a==='f'&&draft){draft[el.dataset.f]=el.value;}
+ else if(el.id==='company'){state.meta.company=el.value;save();}
+ else if(el.id==='manager'){state.meta.manager=el.value;save();}
+});
+try{localStorage.setItem(KEY+'.t','1');localStorage.removeItem(KEY+'.t');}catch(e){storageOK=false;}
+render();
+})();
+</script>
+</body>
+</html>
